@@ -10,6 +10,11 @@ provider:
   lambdaHashingVersion: 20201221
   stage: dev
 
+  # #Custom
+  # custom:
+  #   defaultStage: dev
+  #   currentStage: ${opt:stage, self:custom.defaultStage}
+
   # Environment Variables
   environment:
     DYNAMODB_TABLE: todo-api-table
@@ -18,25 +23,25 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        # - dynamodb:Query
-        # - dynamodb:Scan
-        # - dynamodb:PutItem
-        - dynamodb:*
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
+#Lambda
 functions:
   create:
     handler: create.create
     events: 
       - http:
-          path: todo/create
+          path: /addItem
           method: post
 
   list:
     handler: list.list
     events: 
       - http:
-          path: todo/list
+          path: /list
           method: get
 
 resources:
