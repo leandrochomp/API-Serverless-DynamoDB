@@ -10,23 +10,26 @@ provider:
   lambdaHashingVersion: 20201221
   stage: dev
 
-  # #Custom
-  # custom:
-  #   defaultStage: dev
-  #   currentStage: ${opt:stage, self:custom.defaultStage}
+# Custom Variables
+# custom:
+#   stages:
+#     - dev
+#     - staging
+#   currentStage: ${opt:stage, self:custom.stages}
 
   # Environment Variables
   environment:
     DYNAMODB_TABLE: todo-api-table
 
-  #IAM Roles  
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:PutItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+# #IAM Roles
+#   iam:
+#     role:
+#       statements:
+#         - Effect: 'Allow'
+#           Action:
+#           - dynamodb:Scan
+#           - dynamodb:PutItem
+#           Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 #Lambda
 functions:
@@ -36,6 +39,12 @@ functions:
       - http:
           path: /addItem
           method: post
+    iamRoleStatementsName: CustomRoleToPutItem #optional custom role name setting instead of the default generated one
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:PutItem        
+        Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
   list:
     handler: list.list
@@ -43,6 +52,12 @@ functions:
       - http:
           path: /list
           method: get
+    iamRoleStatementsName: CustomRoleToScanItem #optional custom role name setting instead of the default generated one
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - dynamodb:Scan        
+        Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"      
 
 resources:
   Resources:
@@ -64,3 +79,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+plugins:
+  - serverless-iam-roles-per-function
