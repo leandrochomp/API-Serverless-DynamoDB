@@ -6,9 +6,13 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: nodejs12.x
-  region: ap-southeast-2
+  #region: ap-southeast-2
+  region: ${opt:region,'ap-southeast-2'}
+  #region: ${opt:region, self:provider.region}
   lambdaHashingVersion: 20201221
-  stage: dev
+  #stage: dev
+  stage: ${opt:stage,'dev'}
+  #stage: ${opt:stage, self:provider.region}
 
 # Custom Variables
 # custom:
@@ -39,7 +43,7 @@ functions:
       - http:
           path: /addItem
           method: post
-    iamRoleStatementsName: CustomRoleToPutItem #optional custom role name setting instead of the default generated one
+    #iamRoleStatementsName: CustomRoleToPutItem #optional custom role name setting instead of the default generated one
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
@@ -52,7 +56,7 @@ functions:
       - http:
           path: /list
           method: get
-    iamRoleStatementsName: CustomRoleToScanItem #optional custom role name setting instead of the default generated one
+    #iamRoleStatementsName: CustomRoleToScanItem #optional custom role name setting instead of the default generated one
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
