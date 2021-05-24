@@ -38,7 +38,7 @@ provider:
 #Lambda
 functions:
   create:
-    handler: create.create
+    handler: src/create.create
     events: 
       - http:
           path: /addItem
@@ -51,7 +51,7 @@ functions:
         Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
   list:
-    handler: list.list
+    handler: src/list.list
     events: 
       - http:
           path: /list
